@@ -56,9 +56,6 @@ LATE_GRACE_SECONDS = 10 * 60      # R2
 OVERTIME_MIN_MINUTES = 30         # R3
 HALF_DAY_LIMIT = Decimal("4.50")  # R5
 
-app = FastAPI(title="Employee Attendance & Analytics API", version="2.0.0")
-
-
 # --------------------------------------------------------------------------- #
 # Helpers (pure functions: no DB, no clock, so they are easy to unit test)
 # --------------------------------------------------------------------------- #
@@ -140,8 +137,6 @@ def compute_work_hours(punch_in: datetime, punch_out: datetime) -> float:
 def compute_half_day(work_hours: Optional[float]) -> bool:
     """R5: judged on the ROUNDED work_hours (4.499 -> 4.50 -> not a half day)."""
     return work_hours is not None and Decimal(str(work_hours)) < HALF_DAY_LIMIT
-
-
 
 
 # --------------------------------------------------------------------------- #
@@ -609,7 +604,6 @@ def regularize_attendance(emp_code: str, date: DateStr, body: RegularizeRequest)
     if updated is None:
         raise HTTPException(409, "record was modified concurrently, please retry")
     return attendance_out(updated)
-
 
 
 # --------------------------------------------------------------------------- #
